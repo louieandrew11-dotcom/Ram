@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block title %}Patient Heart Disease Prediction{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Cardiovascular Disease Risk Prediction</h1>
+    <p>
+        Enter the patient's clinical biometric parameters below to predict the likelihood of cardiovascular disease using our trained machine learning models.
+    </p>
+
+    <!-- Quick Demonstration Buttons -->
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 12px 16px; margin-bottom: 20px;">
+        <span style="font-size: 13px; font-weight: 600; color: #475569; margin-right: 10px;">Quick Demo Autofill:</span>
+        <button type="button" id="btn-sample-healthy" class="btn btn-outline" style="padding: 5px 12px; font-size: 12.5px;">
+            &#x1F7E2; Fill Sample Healthy Patient
+        </button>
+        <button type="button" id="btn-sample-risk" class="btn btn-outline" style="padding: 5px 12px; font-size: 12.5px; margin-left: 6px;">
+            &#x1F534; Fill Sample High-Risk Patient
+        </button>
+    </div>
+
+    <!-- Prediction Form -->
+    <form action="{{ url_for('predict') }}" method="POST">
+        <div class="form-grid">
+            <!-- 1. Age -->
+            <div class="form-group">
+                <label for="age">1. Age (Years)</label>
+                <input type="number" id="age" name="age" min="1" max="110" step="1" required 
+                       value="{{ form_data.get('age', 52) }}" class="form-control">
+                <span class="form-hint">Patient age between 20 and 90</span>
+            </div>
+
+            <!-- 2. Gender -->
+            <div class="form-group">
+                <label for="sex">2. Gender</label>
+                <select id="sex" name="sex" required class="form-control">
+                    <option value="1" {% if form_data.get('sex', 1) == 1 %}selected{% endif %}>Male (1)</option>
+                    <option value="0" {% if form_data.get('sex', 1) == 0 %}selected{% endif %}>Female (0)</option>
+                </select>
+                <span class="form-hint">Biological sex of the patient</span>
+            </div>
+
+            <!-- 3. Chest Pain Type -->
+            <div class="form-group">
+                <label for="cp">3. Chest Pain Type (cp)</label>
+                <select id="cp" name="cp" required class="form-control">
+                    <option value="1" {% if form_data.get('cp', 1) == 1 %}selected{% endif %}>1: Typical Angina</option>
+                    <option value="2" {% if form_data.get('cp', 1) == 2 %}selected{% endif %}>2: Atypical Angina</option>
+                    <option value="3" {% if form_data.get('cp', 1) == 3 %}selected{% endif %}>3: Non-anginal Pain</option>
+                    <option value="4" {% if form_data.get('cp', 1) == 4 %}selected{% endif %}>4: Asymptomatic</option>
+                </select>
+                <span class="form-hint">Clinical classification of chest pain</span>
+            </div>
+
+            <!-- 4. Resting Blood Pressure -->
+            <div class="form-group">
+                <label for="trestbps">4. Resting Blood Pressure (mm Hg)</label>
+                <input type="number" id="trestbps" name="trestbps" min="60" max="250" step="1" required
+                       value="{{ form_data.get('trestbps', 125) }}" class="form-control">
+                <span class="form-hint">Normal range: 90 - 120 mm Hg</span>
+            </div>
+
+            <!-- 5. Serum Cholesterol -->
+            <div class="form-group">
+                <label for="chol">5. Serum Cholesterol (mg/dl)</label>
+                <input type="number" id="chol" name="chol" min="80" max="600" step="1" required
+                       value="{{ form_data.get('chol', 212) }}" class="form-control">
+                <span class="form-hint">Normal: &lt; 200 mg/dl, Borderline: 200-239</span>
+            </div>
+
+            <!-- 6. Fasting Blood Sugar -->
+            <div class="form-group">
+                <label for="fbs">6. Fasting Blood Sugar &gt; 120 mg/dl</label>
+                <select id="fbs" name="fbs" required class="form-control">
+                    <option value="0" {% if form_data.get('fbs', 0) == 0 %}selected{% endif %}>0: False (&le; 120 mg/dl)</option>
+                    <option value="1" {% if form_data.get('fbs', 0) == 1 %}selected{% endif %}>1: True (&gt; 120 mg/dl)</option>
+                </select>
+                <span class="form-hint">Indicates diabetes / insulin resistance</span>
+            </div>
+
+            <!-- 7. Resting ECG -->
+            <div class="form-group">
+                <label for="restecg">7. Resting ECG Results</label>
+                <select id="restecg" name="restecg" required class="form-control">
+                    <option value="0" {% if form_data.get('restecg', 0) == 0 %}selected{% endif %}>0: Normal</option>
+                    <option value="1" {% if form_data.get('restecg', 0) == 1 %}selected{% endif %}>1: ST-T Wave Abnormality</option>
+                    <option value="2" {% if form_data.get('restecg', 0) == 2 %}selected{% endif %}>2: Left Ventricular Hypertrophy</option>
+                </select>
+                <span class="form-hint">Electrocardiogram resting test</span>
+            </div>
+
+            <!-- 8. Maximum Heart Rate -->
+            <div class="form-group">
+                <label for="thalach">8. Max Heart Rate Achieved (thalach)</label>
+                <input type="number" id="thalach" name="thalach" min="50" max="230" step="1" required
+                       value="{{ form_data.get('thalach', 160) }}" class="form-control">
+                <span class="form-hint">Recorded during stress exercise testing</span>
+            </div>
+
+            <!-- 9. Exercise Induced Angina -->
+            <div class="form-group">
+                <label for="exang">9. Exercise Induced Angina (exang)</label>
+                <select id="exang" name="exang" required class="form-control">
+                    <option value="0" {% if form_data.get('exang', 0) == 0 %}selected{% endif %}>0: No</option>
+                    <option value="1" {% if form_data.get('exang', 0) == 1 %}selected{% endif %}>1: Yes</option>
+                </select>
+                <span class="form-hint">Angina pain brought on by exercise</span>
+            </div>
+
+            <!-- 10. ST Depression (Oldpeak) -->
+            <div class="form-group">
+                <label for="oldpeak">10. ST Depression (oldpeak)</label>
+                <input type="number" id="oldpeak" name="oldpeak" min="0.0" max="10.0" step="0.1" required
+                       value="{{ form_data.get('oldpeak', 0.8) }}" class="form-control">
+                <span class="form-hint">ST depression induced by exercise vs rest</span>
+            </div>
+
+            <!-- 11. Slope of Peak Exercise ST -->
+            <div class="form-group">
+                <label for="slope">11. Slope of Peak Exercise ST</label>
+                <select id="slope" name="slope" required class="form-control">
+                    <option value="1" {% if form_data.get('slope', 1) == 1 %}selected{% endif %}>1: Upsloping</option>
+                    <option value="2" {% if form_data.get('slope', 1) == 2 %}selected{% endif %}>2: Flat</option>
+                    <option value="3" {% if form_data.get('slope', 1) == 3 %}selected{% endif %}>3: Downsloping</option>
+                </select>
+                <span class="form-hint">Slope of the peak exercise ST segment</span>
+            </div>
+
+            <!-- 12. Major Vessels Colored -->
+            <div class="form-group">
+                <label for="ca">12. Major Vessels Colored (ca)</label>
+                <select id="ca" name="ca" required class="form-control">
+                    <option value="0" {% if form_data.get('ca', 0) == 0 %}selected{% endif %}>0</option>
+                    <option value="1" {% if form_data.get('ca', 0) == 1 %}selected{% endif %}>1</option>
+                    <option value="2" {% if form_data.get('ca', 0) == 2 %}selected{% endif %}>2</option>
+                    <option value="3" {% if form_data.get('ca', 0) == 3 %}selected{% endif %}>3</option>
+                </select>
+                <span class="form-hint">Number of vessels (0-3) via fluoroscopy</span>
+            </div>
+
+            <!-- 13. Thalassemia -->
+            <div class="form-group">
+                <label for="thal">13. Thalassemia Status (thal)</label>
+                <select id="thal" name="thal" required class="form-control">
+                    <option value="3" {% if form_data.get('thal', 3) == 3 %}selected{% endif %}>3: Normal</option>
+                    <option value="6" {% if form_data.get('thal', 3) == 6 %}selected{% endif %}>6: Fixed Defect</option>
+                    <option value="7" {% if form_data.get('thal', 3) == 7 %}selected{% endif %}>7: Reversible Defect</option>
+                </select>
+                <span class="form-hint">Blood disorder / blood flow status</span>
+            </div>
+
+            <!-- 14. ML Model Selector -->
+            <div class="form-group">
+                <label for="model_name">Select Machine Learning Algorithm</label>
+                <select id="model_name" name="model_name" class="form-control" style="font-weight: 600; color: #0b5394;">
+                    <option value="Random Forest" {% if request.form.get('model_name') == 'Random Forest' %}selected{% endif %}>Random Forest (Recommended / Best)</option>
+                    <option value="Support Vector Machine" {% if request.form.get('model_name') == 'Support Vector Machine' %}selected{% endif %}>Support Vector Machine (SVM)</option>
+                    <option value="Logistic Regression" {% if request.form.get('model_name') == 'Logistic Regression' %}selected{% endif %}>Logistic Regression</option>
+                    <option value="K-Nearest Neighbors" {% if request.form.get('model_name') == 'K-Nearest Neighbors' %}selected{% endif %}>K-Nearest Neighbors (KNN)</option>
+                    <option value="Decision Tree" {% if request.form.get('model_name') == 'Decision Tree' %}selected{% endif %}>Decision Tree</option>
+                </select>
+                <span class="form-hint">Pick which algorithm evaluates the patient</span>
+            </div>
+        </div>
+
+        <div class="btn-group" style="margin-top: 25px;">
+            <button type="submit" class="btn" style="padding: 10px 24px; font-size: 15px;">&#x2764;&#xFE0F; Predict Heart Disease Risk</button>
+            <a href="{{ url_for('predict') }}" class="btn btn-secondary">Clear / Reset Form</a>
+        </div>
+    </form>
+
+    <!-- Prediction Output Result Box -->
+    {% if result %}
+    <div class="result-box {% if result.prediction == 1 %}result-positive{% else %}result-negative{% endif %}">
+        <div class="result-header">
+            <span class="result-badge {% if result.prediction == 1 %}badge-danger{% else %}badge-success{% endif %}">
+                {% if result.prediction == 1 %}HIGH RISK (POSITIVE){% else %}LOW RISK (NEGATIVE){% endif %}
+            </span>
+            <h3 style="margin-bottom: 0; color: inherit;">{{ result.result_text }}</h3>
+        </div>
+
+        <div class="result-metrics">
+            <div class="metric-item">
+                <span class="metric-label">Algorithm Used:</span>
+                <span class="metric-value">{{ result.model_used }}</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-label">Estimated Risk Probability:</span>
+                <span class="metric-value">{{ result.probability }}%</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-label">Clinical Risk Status:</span>
+                <span class="metric-value">{{ result.risk_level }}</span>
+            </div>
+        </div>
+
+        <div>
+            <h4 style="color: inherit; margin-bottom: 6px;">Recommended Clinical Actions & Lifestyle Guidance:</h4>
+            <ul class="advice-list">
+                {% for item in result.advice %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

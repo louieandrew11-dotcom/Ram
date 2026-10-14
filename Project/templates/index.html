@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Cardiovascular Disease Prediction using Machine Learning{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <h1 class="hero-title">Cardiovascular Disease Prediction using Machine Learning</h1>
+    <p class="hero-lead">
+        Cardiovascular disease (CVD) is the leading cause of death globally. Early diagnosis and timely intervention are crucial for preventing severe complications such as heart failure and myocardial infarction. This web application demonstrates how machine learning algorithms analyze patient clinical parameters to assess the risk of heart disease with high accuracy.
+    </p>
+    <div class="btn-group">
+        <a href="{{ url_for('dataset') }}" class="btn">Get Started &rarr;</a>
+        <a href="{{ url_for('predict') }}" class="btn btn-outline">Go Directly to Patient Prediction</a>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Project Overview</h2>
+    <p>
+        This project is designed and implemented as an academic final-year / semester college project. It demonstrates the full lifecycle of a supervised machine learning workflow applied to healthcare diagnostics:
+    </p>
+
+    <div class="features-grid">
+        <div class="feature-box">
+            <h3>&#x1F4CA; 1. Dataset Analysis</h3>
+            <p>
+                Explore clinical records containing 14 key physiological attributes (such as age, blood pressure, cholesterol, resting ECG). Upload new custom CSV datasets or analyze the benchmark Cleveland heart disease data.
+            </p>
+            <a href="{{ url_for('dataset') }}">View Dataset &rarr;</a>
+        </div>
+
+        <div class="feature-box">
+            <h3>&#x1F4C8; 2. Data Visualization</h3>
+            <p>
+                Inspect graphical distributions including age spread, chest pain correlations, heart rate trends, and a comprehensive correlation heatmap showing relationships between biometric variables.
+            </p>
+            <a href="{{ url_for('visualize') }}">View Graphs &rarr;</a>
+        </div>
+
+        <div class="feature-box">
+            <h3>&#x2696;&#xFE0F; 3. Model Comparison</h3>
+            <p>
+                Compare five widely used classification algorithms: <strong>Logistic Regression, K-Nearest Neighbors (KNN), Support Vector Machine (SVM), Decision Tree, and Random Forest</strong> on real test metrics (Accuracy, Precision, Recall, F1-Score).
+            </p>
+            <a href="{{ url_for('models') }}">Compare Models &rarr;</a>
+        </div>
+
+        <div class="feature-box">
+            <h3>&#x1F9D1;&#x200D;&#x2695;&#xFE0F; 4. Live Prediction</h3>
+            <p>
+                Input clinical data for any patient to receive an instant diagnosis prediction, calculated risk percentage, and actionable lifestyle recommendations based on the highest-performing machine learning model.
+            </p>
+            <a href="{{ url_for('predict') }}">Test Prediction &rarr;</a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Key Project Features</h2>
+    <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+        <li><strong>Standard Machine Learning Pipeline:</strong> Built with Scikit-learn using StandardScaler feature scaling and stratified train-test splitting.</li>
+        <li><strong>Real-time Model Training:</strong> All 5 algorithms are evaluated on actual data with confusion matrix calculation and classification metrics.</li>
+        <li><strong>Dynamic Dataset Support:</strong> Flexibility to upload any custom heart disease CSV file and dynamically recalculate all metrics and visualizations.</li>
+        <li><strong>Interactive Clinical Form:</strong> Includes pre-fill sample profiles (Healthy and High-Risk) for easy live demonstration during college project reviews.</li>
+    </ul>
+</div>
+{% endblock %}

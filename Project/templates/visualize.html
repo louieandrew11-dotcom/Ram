@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Data Visualization - Cardiovascular Disease Prediction{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Data Visualization & Exploratory Data Analysis</h1>
+    <p>
+        Exploratory Data Analysis (EDA) helps identify patterns, distributions, and relationships between physiological parameters and the likelihood of cardiovascular disease.
+    </p>
+
+    <div class="plots-grid">
+        <!-- Plot 1: Target Distribution -->
+        <div class="plot-card">
+            <h3>1. Target Diagnosis Distribution</h3>
+            {% if plots.target_distribution %}
+                <img src="data:image/png;base64,{{ plots.target_distribution }}" alt="Target Distribution" class="plot-img">
+            {% else %}
+                <p>Plot unavailable.</p>
+            {% endif %}
+            <div class="plot-description">
+                <strong>Clinical Insight:</strong> Illustrates the balance between patients diagnosed with cardiovascular disease (Class 1) and healthy individuals (Class 0). A balanced distribution prevents machine learning models from developing majority-class bias.
+            </div>
+        </div>
+
+        <!-- Plot 2: Age Distribution -->
+        <div class="plot-card">
+            <h3>2. Patient Age Distribution</h3>
+            {% if plots.age_distribution %}
+                <img src="data:image/png;base64,{{ plots.age_distribution }}" alt="Age Distribution" class="plot-img">
+            {% else %}
+                <p>Plot unavailable.</p>
+            {% endif %}
+            <div class="plot-description">
+                <strong>Clinical Insight:</strong> The majority of patients in the dataset fall between 50 and 65 years of age. Advanced age is an established independent clinical risk factor for arterial stiffness and coronary artery disease.
+            </div>
+        </div>
+
+        <!-- Plot 3: Chest Pain vs Target -->
+        <div class="plot-card">
+            <h3>3. Chest Pain Type vs Heart Disease</h3>
+            {% if plots.cp_distribution %}
+                <img src="data:image/png;base64,{{ plots.cp_distribution }}" alt="Chest Pain Distribution" class="plot-img">
+            {% else %}
+                <p>Plot unavailable.</p>
+            {% endif %}
+            <div class="plot-description">
+                <strong>Clinical Insight:</strong> Non-anginal pain (Type 2) and atypical angina (Type 1) frequently correlate with confirmed cardiovascular events, whereas typical angina may stem from musculoskeletal or non-ischemic causes.
+            </div>
+        </div>
+
+        <!-- Plot 4: Max Heart Rate vs Age -->
+        <div class="plot-card">
+            <h3>4. Maximum Heart Rate (thalach) vs Age</h3>
+            {% if plots.heart_rate_vs_age %}
+                <img src="data:image/png;base64,{{ plots.heart_rate_vs_age }}" alt="Heart Rate vs Age" class="plot-img">
+            {% else %}
+                <p>Plot unavailable.</p>
+            {% endif %}
+            <div class="plot-description">
+                <strong>Clinical Insight:</strong> Maximum achievable heart rate naturally decreases with age. Patients with diagnosed heart disease (red markers) frequently cluster at lower maximum heart rate capacities during cardiovascular stress tests.
+            </div>
+        </div>
+
+        <!-- Plot 5: BP vs Cholesterol -->
+        <div class="plot-card">
+            <h3>5. Blood Pressure vs Serum Cholesterol</h3>
+            {% if plots.bp_vs_chol %}
+                <img src="data:image/png;base64,{{ plots.bp_vs_chol }}" alt="Blood Pressure vs Cholesterol" class="plot-img">
+            {% else %}
+                <p>Plot unavailable.</p>
+            {% endif %}
+            <div class="plot-description">
+                <strong>Clinical Insight:</strong> Evaluates the combined impact of resting hypertension (&gt; 130-140 mm Hg) and hypercholesterolemia (&gt; 200 mg/dl). Patients exhibiting both elevated parameters represent a higher clinical risk cohort.
+            </div>
+        </div>
+
+        <!-- Plot 6: Correlation Heatmap -->
+        <div class="plot-card">
+            <h3>6. Feature Correlation Heatmap</h3>
+            {% if plots.correlation_heatmap %}
+                <img src="data:image/png;base64,{{ plots.correlation_heatmap }}" alt="Correlation Heatmap" class="plot-img">
+            {% else %}
+                <p>Plot unavailable.</p>
+            {% endif %}
+            <div class="plot-description">
+                <strong>Clinical Insight:</strong> Features such as <code>cp</code> (chest pain), <code>thalach</code> (max heart rate), and <code>slope</code> show positive correlation with heart disease, while <code>oldpeak</code>, <code>exang</code>, and <code>ca</code> demonstrate significant inverse or predictive associations.
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-group" style="margin-top: 25px;">
+        <a href="{{ url_for('models') }}" class="btn">Proceed to Model Comparison &rarr;</a>
+    </div>
+</div>
+{% endblock %}

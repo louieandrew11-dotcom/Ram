@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}About Project - Cardiovascular Disease Prediction{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>About The Project</h1>
+    <p class="hero-lead">
+        Comprehensive academic project report documentation for <strong>Cardiovascular Disease Prediction using Machine Learning</strong>.
+    </p>
+
+    <h2>1. Project Objective</h2>
+    <p>
+        The primary objective of this project is to develop an accessible, efficient, and reliable web-based clinical decision support system capable of predicting the presence of cardiovascular disease in patients based on physiological indicators.
+    </p>
+    <ul style="margin-left: 20px; margin-bottom: 15px; line-height: 1.7;">
+        <li>Provide early detection and non-invasive cardiovascular risk screening.</li>
+        <li>Perform in-depth Exploratory Data Analysis (EDA) on clinical health attributes.</li>
+        <li>Train and benchmark five distinct machine learning classifiers: <strong>Logistic Regression, K-Nearest Neighbors (KNN), Support Vector Machine (SVM), Decision Tree, and Random Forest</strong>.</li>
+        <li>Deploy the trained models via a lightweight, responsive Python Flask web application.</li>
+    </ul>
+
+    <h2>2. Technologies & Frameworks Used</h2>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Technology</th>
+                    <th>Role in Project</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Backend Framework</strong></td>
+                    <td>Python 3 & Flask</td>
+                    <td>Handles HTTP routing, file uploads, server-side data processing, and ML model serving.</td>
+                </tr>
+                <tr>
+                    <td><strong>Machine Learning</strong></td>
+                    <td>Scikit-learn</td>
+                    <td>Implements classifiers (SVM, KNN, DT, LR, RF), train-test splits, scaling, and evaluation metrics.</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Processing</strong></td>
+                    <td>Pandas & NumPy</td>
+                    <td>Data ingestion, tabular manipulation, missing-value checks, and descriptive statistics.</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Visualization</strong></td>
+                    <td>Matplotlib & Seaborn</td>
+                    <td>Generates clinical distribution charts, correlation heatmaps, and confusion matrix diagrams.</td>
+                </tr>
+                <tr>
+                    <td><strong>Frontend Interface</strong></td>
+                    <td>HTML5, CSS3, JavaScript</td>
+                    <td>Clean, professional, responsive user interface with intuitive forms and live sample autofill.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>3. System Architecture & Methodology</h2>
+    <p>
+        The system follows the standard machine learning life-cycle for healthcare predictive analytics:
+    </p>
+    <ol style="margin-left: 20px; margin-bottom: 20px; line-height: 1.8;">
+        <li><strong>Data Collection:</strong> Utilizes the benchmark UCI Cleveland Heart Disease dataset comprising 303 patient records across 14 biometric attributes.</li>
+        <li><strong>Data Preprocessing:</strong> Verification of null values, standard normalization of numerical attributes using <code>StandardScaler</code> to ensure scale invariance across algorithms (especially critical for distance and margin-based models like KNN and SVM).</li>
+        <li><strong>Exploratory Data Analysis:</strong> Generation of univariate and bivariate distribution graphs and cross-correlation matrices to evaluate feature relevance.</li>
+        <li><strong>Model Training & Testing:</strong> Partitioning dataset into 80% training and 20% testing sets using stratified sampling to preserve class ratios.</li>
+        <li><strong>Model Evaluation:</strong> Rigorous evaluation using Accuracy, Precision, Recall, F1-Score, and Confusion Matrices.</li>
+        <li><strong>Web Interface Deployment:</strong> Integration of trained models with Flask routes to accept dynamic patient input and output real-time diagnosis predictions with clinical guidance.</li>
+    </ol>
+
+    <h2>4. Machine Learning Algorithms Summary</h2>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Algorithm</th>
+                    <th>Mathematical / Working Principle</th>
+                    <th>Key Advantages</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Logistic Regression</strong></td>
+                    <td>Uses the sigmoid function to map linear combinations of features to probabilistic outputs between 0 and 1.</td>
+                    <td>Highly interpretable, fast computation, and establishes a strong baseline for binary classification.</td>
+                </tr>
+                <tr>
+                    <td><strong>K-Nearest Neighbors (KNN)</strong></td>
+                    <td>Non-parametric algorithm that calculates Euclidean distance to find the <em>k</em> closest patient profiles in feature space.</td>
+                    <td>Simple and intuitive; makes no strict assumptions regarding underlying data distributions.</td>
+                </tr>
+                <tr>
+                    <td><strong>Support Vector Machine (SVM)</strong></td>
+                    <td>Finds the optimal separating hyperplane that maximizes the geometric margin between healthy and disease classes using an RBF kernel.</td>
+                    <td>Effective in multi-dimensional feature spaces and robust against moderate outliers.</td>
+                </tr>
+                <tr>
+                    <td><strong>Decision Tree</strong></td>
+                    <td>Recursive partitioning of feature space based on Gini Impurity or Information Gain to form rule-based decision paths.</td>
+                    <td>Naturally handles non-linear boundaries and mimics human clinical diagnostic flowcharts.</td>
+                </tr>
+                <tr>
+                    <td><strong>Random Forest</strong></td>
+                    <td>Ensemble meta-estimator that aggregates predictions from 100 decorrelated decision trees built via bootstrap sampling.</td>
+                    <td>Significantly reduces overfitting and variance, resulting in highest overall predictive accuracy and robustness.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>5. Project Conclusion & Future Scope</h2>
+    <p>
+        <strong>Conclusion:</strong> The experimental results validate that machine learning algorithms can successfully identify cardiovascular disease risk with superior accuracy (up to 83-84%). Ensemble methods, specifically Random Forest, consistently deliver balanced precision and recall, minimizing both false positives and dangerous false negatives in clinical classification.
+    </p>
+    <p>
+        <strong>Future Enhancements:</strong>
+    </p>
+    <ul style="margin-left: 20px; margin-bottom: 20px; line-height: 1.7;">
+        <li>Integration with IoT wearable devices (such as smartwatches) for continuous automated heart rate and ECG telemetry monitoring.</li>
+        <li>Support for larger clinical datasets with automated Hyperparameter Tuning (using GridSearchCV).</li>
+        <li>Deployment onto secure cloud infrastructure with Electronic Health Record (EHR) API interoperability.</li>
+    </ul>
+
+    <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 4px; padding: 14px 18px; margin-top: 20px;">
+        <strong>Academic Disclaimer:</strong> This software is developed strictly for college academic demonstration and educational purposes. It is intended to assist medical professionals as a decision-support demonstration tool and should not be used as a standalone diagnostic substitute for certified clinical examinations.
+    </div>
+
+    <div class="btn-group" style="margin-top: 20px;">
+        <a href="{{ url_for('home') }}" class="btn">&larr; Return to Home Page</a>
+        <a href="{{ url_for('predict') }}" class="btn btn-outline">Try Patient Prediction</a>
+    </div>
+</div>
+{% endblock %}

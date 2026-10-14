@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}Dataset Analysis - Cardiovascular Disease Prediction{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Dataset Analysis</h1>
+    <p>
+        Analyze the patient dataset used to train and test the machine learning algorithms. You can upload a new CSV file or examine the pre-loaded benchmark UCI Cleveland Heart Disease dataset.
+    </p>
+
+    <!-- Upload CSV Section -->
+    <div class="upload-box">
+        <h3 style="margin-bottom: 10px;">Upload Custom CSV Dataset</h3>
+        <p style="font-size: 13.5px; color: #555; margin-bottom: 15px;">
+            Select a CSV dataset file containing cardiovascular patient records. The last column or column named <code>target</code> will be used as the classification label.
+        </p>
+
+        <form action="{{ url_for('dataset') }}" method="POST" enctype="multipart/form-data" style="display: inline-block;">
+            <div style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap;">
+                <input type="file" name="file" accept=".csv" required class="form-control" style="max-width: 300px;">
+                <button type="submit" class="btn">Upload & Analyze CSV</button>
+            </div>
+        </form>
+
+        {% if summary and summary.is_uploaded %}
+            <div style="margin-top: 15px;">
+                <span class="alert alert-info" style="display: inline-block; padding: 6px 12px; margin-bottom: 0;">
+                    Currently using uploaded dataset: <strong>{{ summary.filename }}</strong>
+                </span>
+                <form action="{{ url_for('dataset') }}" method="POST" style="display: inline-block; margin-left: 10px;">
+                    <input type="hidden" name="reset" value="true">
+                    <button type="submit" class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;">Reset to Default Dataset</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if summary %}
+        <!-- Summary Stats Grid -->
+        <h2>Dataset Summary Metrics</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0 25px 0;">
+            <div style="padding: 15px; border: 1px solid #e2e8f0; border-radius: 4px; background-color: #f8fafc;">
+                <div style="font-size: 12px; color: #64748b; font-weight: 600;">ACTIVE DATASET</div>
+                <div style="font-size: 18px; font-weight: 700; color: #0b5394;">{{ summary.filename }}</div>
+            </div>
+            <div style="padding: 15px; border: 1px solid #e2e8f0; border-radius: 4px; background-color: #f8fafc;">
+                <div style="font-size: 12px; color: #64748b; font-weight: 600;">TOTAL ROWS (SAMPLES)</div>
+                <div style="font-size: 22px; font-weight: 700; color: #2d3748;">{{ summary.rows }}</div>
+            </div>
+            <div style="padding: 15px; border: 1px solid #e2e8f0; border-radius: 4px; background-color: #f8fafc;">
+                <div style="font-size: 12px; color: #64748b; font-weight: 600;">TOTAL COLUMNS (ATTRIBUTES)</div>
+                <div style="font-size: 22px; font-weight: 700; color: #2d3748;">{{ summary.cols }}</div>
+            </div>
+            <div style="padding: 15px; border: 1px solid #e2e8f0; border-radius: 4px; background-color: #f8fafc;">
+                <div style="font-size: 12px; color: #64748b; font-weight: 600;">MISSING VALUES</div>
+                <div style="font-size: 22px; font-weight: 700; color: {% if summary.missing_count == 0 %}#28a745{% else %}#e53e3e{% endif %};">
+                    {{ summary.missing_count }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Target Distribution Summary -->
+        <h3>Target Class Distribution</h3>
+        <p style="font-size: 14px;">
+            Target column: <code>{{ summary.target_col }}</code> &bull;
+            {% for class_label, count in summary.target_counts.items() %}
+                <strong>Class {{ class_label }}:</strong> {{ count }} samples &nbsp;&nbsp;
+            {% endfor %}
+        </p>
+
+        <!-- Preview Table -->
+        <h2>First 10 Rows (Dataset Preview)</h2>
+        <div class="table-responsive">
+            {{ summary.preview_html | safe }}
+        </div>
+
+        <!-- Statistical Description -->
+        <h2>Descriptive Statistics (Summary Metrics)</h2>
+        <p style="font-size: 13.5px; color: #555;">
+            Calculated summary statistics (Count, Mean, Standard Deviation, Min, 25%, 50%, 75%, and Max) across numeric attributes:
+        </p>
+        <div class="table-responsive">
+            {{ summary.describe_html | safe }}
+        </div>
+
+        <!-- Feature Dictionary -->
+        <h2>Feature Glossary & Clinical Definitions</h2>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Attribute</th>
+                        <th>Full Name</th>
+                        <th>Data Type</th>
+                        <th>Clinical Description / Values</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>age</strong></td>
+                        <td>Age</td>
+                        <td>Numeric</td>
+                        <td>Age of the patient in years (e.g., 29 to 77)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>sex</strong></td>
+                        <td>Gender</td>
+                        <td>Categorical</td>
+                        <td>1 = Male, 0 = Female</td>
+                    </tr>
+                    <tr>
+                        <td><strong>cp</strong></td>
+                        <td>Chest Pain Type</td>
+                        <td>Categorical</td>
+                        <td>1: Typical Angina, 2: Atypical Angina, 3: Non-anginal pain, 4: Asymptomatic</td>
+                    </tr>
+                    <tr>
+                        <td><strong>trestbps</strong></td>
+                        <td>Resting Blood Pressure</td>
+                        <td>Numeric</td>
+                        <td>Resting blood pressure in mm Hg on admission to the hospital</td>
+                    </tr>
+                    <tr>
+                        <td><strong>chol</strong></td>
+                        <td>Serum Cholesterol</td>
+                        <td>Numeric</td>
+                        <td>Serum cholesterol level in mg/dl</td>
+                    </tr>
+                    <tr>
+                        <td><strong>fbs</strong></td>
+                        <td>Fasting Blood Sugar</td>
+                        <td>Categorical</td>
+                        <td>1 = Greater than 120 mg/dl (Diabetic risk), 0 = Less than or equal to 120 mg/dl</td>
+                    </tr>
+                    <tr>
+                        <td><strong>restecg</strong></td>
+                        <td>Resting Electrocardiographic</td>
+                        <td>Categorical</td>
+                        <td>0: Normal, 1: ST-T wave abnormality, 2: Left ventricular hypertrophy</td>
+                    </tr>
+                    <tr>
+                        <td><strong>thalach</strong></td>
+                        <td>Max Heart Rate Achieved</td>
+                        <td>Numeric</td>
+                        <td>Maximum heart rate measured during stress testing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>exang</strong></td>
+                        <td>Exercise Induced Angina</td>
+                        <td>Categorical</td>
+                        <td>1 = Yes (chest pain triggered by exercise), 0 = No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>oldpeak</strong></td>
+                        <td>ST Depression</td>
+                        <td>Numeric</td>
+                        <td>ST depression induced by exercise relative to rest</td>
+                    </tr>
+                    <tr>
+                        <td><strong>slope</strong></td>
+                        <td>Slope of Peak Exercise ST</td>
+                        <td>Categorical</td>
+                        <td>1: Upsloping, 2: Flat, 3: Downsloping</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ca</strong></td>
+                        <td>Major Vessels Colored</td>
+                        <td>Numeric</td>
+                        <td>Number of major blood vessels (0 - 3) colored by fluoroscopy</td>
+                    </tr>
+                    <tr>
+                        <td><strong>thal</strong></td>
+                        <td>Thalassemia Status</td>
+                        <td>Categorical</td>
+                        <td>3 = Normal, 6 = Fixed defect, 7 = Reversible defect</td>
+                    </tr>
+                    <tr>
+                        <td><strong>target</strong></td>
+                        <td>Diagnosis Outcome</td>
+                        <td>Binary</td>
+                        <td>1 = Heart disease present, 0 = No heart disease (healthy)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="btn-group">
+            <a href="{{ url_for('visualize') }}" class="btn">Proceed to Data Visualization &rarr;</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

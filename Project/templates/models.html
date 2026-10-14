@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}Model Comparison - Cardiovascular Disease Prediction{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+            <h1>Machine Learning Model Comparison</h1>
+            <p style="margin-bottom: 0;">
+                Comparative evaluation of 5 supervised machine learning classification algorithms trained on the dataset using an 80/20 train-test split.
+            </p>
+        </div>
+        <div>
+            <a href="{{ url_for('models', retrain=True) }}" class="btn btn-outline" style="font-size: 13px;">&#x21BB; Retrain All Models</a>
+        </div>
+    </div>
+
+    {% if data %}
+        <!-- Best Model Banner -->
+        <div style="background-color: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 4px; padding: 14px 18px; margin: 20px 0; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+            <div style="font-size: 26px;">&#x1F3C6;</div>
+            <div>
+                <div style="font-size: 16px; font-weight: 700; color: #2e7d32;">
+                    Best Performing Algorithm: {{ data.best_model.name }} ({{ data.best_model.accuracy }}% Accuracy)
+                </div>
+                <div style="font-size: 13px; color: #43a047;">
+                    Achieved an F1-Score of {{ data.best_model.f1_score }}%, with {{ data.best_model.precision }}% precision and {{ data.best_model.recall }}% recall on unseen test data.
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <h2>Performance Evaluation Metrics Table</h2>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Algorithm Name</th>
+                        <th>Accuracy (%)</th>
+                        <th>Precision (%)</th>
+                        <th>Recall (%)</th>
+                        <th>F1-Score (%)</th>
+                        <th>TP</th>
+                        <th>TN</th>
+                        <th>FP</th>
+                        <th>FN</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in data.results %}
+                    <tr class="{% if m.name == data.best_model.name %}highlight-row{% endif %}">
+                        <td><strong>{{ m.name }}</strong></td>
+                        <td><strong>{{ m.accuracy }}%</strong></td>
+                        <td>{{ m.precision }}%</td>
+                        <td>{{ m.recall }}%</td>
+                        <td>{{ m.f1_score }}%</td>
+                        <td>{{ m.tp }}</td>
+                        <td>{{ m.tn }}</td>
+                        <td>{{ m.fp }}</td>
+                        <td>{{ m.fn }}</td>
+                        <td>
+                            {% if m.name == data.best_model.name %}
+                                <span class="metrics-pill pill-best">Highest Accuracy</span>
+                            {% else %}
+                                <span style="font-size: 12px; color: #666;">Evaluated</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p style="font-size: 12px; color: #666; margin-top: -10px;">
+            * TP = True Positives (Correctly identified disease), TN = True Negatives (Correctly identified healthy), FP = False Positives (False alarms), FN = False Negatives (Missed disease).
+        </p>
+
+        <!-- Accuracy Comparison Chart -->
+        <h2>Model Accuracy Comparison Chart</h2>
+        <div style="text-align: center; margin: 20px 0;">
+            {% if data.chart_base64 %}
+                <img src="data:image/png;base64,{{ data.chart_base64 }}" alt="Model Comparison Chart" class="plot-img" style="max-width: 750px;">
+            {% endif %}
+        </div>
+
+        <!-- Confusion Matrices Section -->
+        <h2>Confusion Matrices for Each Model</h2>
+        <p style="font-size: 13.5px; color: #555;">
+            The confusion matrix shows the breakdown of correct vs incorrect classifications on the test set (61 patients):
+        </p>
+        <div class="cm-grid">
+            {% for m in data.results %}
+            <div class="cm-card">
+                <h4>{{ m.name }}</h4>
+                {% if data.cm_plots[m.name] %}
+                    <img src="data:image/png;base64,{{ data.cm_plots[m.name] }}" alt="{{ m.name }} Confusion Matrix" style="width: 100%; max-width: 200px;">
+                {% endif %}
+                <div style="font-size: 11.5px; color: #555; margin-top: 5px;">
+                    Acc: <strong>{{ m.accuracy }}%</strong> | F1: <strong>{{ m.f1_score }}%</strong>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Algorithm Theoretical Background -->
+        <h2>Algorithm Descriptions</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-top: 15px;">
+            {% for m in data.results %}
+            <div style="border: 1px solid #e2e8f0; border-radius: 4px; padding: 14px; background-color: #fafbfc;">
+                <h3 style="margin-bottom: 6px; font-size: 15px; color: #0b5394;">{{ m.name }}</h3>
+                <p style="font-size: 13px; color: #4a5568; margin-bottom: 0;">{{ m.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="btn-group" style="margin-top: 25px;">
+            <a href="{{ url_for('predict') }}" class="btn">Proceed to Patient Prediction Form &rarr;</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
